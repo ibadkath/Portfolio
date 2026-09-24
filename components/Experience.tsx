@@ -1,6 +1,17 @@
 export default function Experience() {
   const experiences = [
     {
+      company: "Atompoint",
+      role: "Frontend Intern",
+      duration: "June 2026– Sep 2026",
+      descriptionPoints: [
+        "Developed and maintained production-ready, responsive web interfaces using React.js, Next.js, TypeScript, and JavaScript.",
+        "Built interactive UI components and animations using Tailwind CSS, Magic UI, and Framer Motion, ensuring responsive and engaging user experiences.",
+        "Integrated APIs and third-party services, including Resend for form submission and email functionality.",
+        "Worked with Supabase for authentication and database integration, while also gaining hands-on experience in full stack development."
+      ],
+    },
+    {
       company: "Breakthrough Pulse",
       role: "Frontend Developer",
       duration: "Oct 2025 - Dec 2025",
@@ -10,10 +21,9 @@ export default function Experience() {
         "Collaborating with the team to fix bugs and improve features in a production-level project.",
         "Enhancing user experience by implementing clean UI components, smooth workflows, and optimized frontend performance."
       ],
-    
     },
     {
-      company: "Freelance ",
+      company: "Freelance",
       role: "Full Stack Developer",
       duration: "Nov 2024 - Present",
       descriptionPoints: [

@@ -3,9 +3,23 @@ import { PROJECTS_QUERY } from "@/sanity/lib/queries";
 import Image from "next/image";
 import Link from "next/link";
 
-export default async function ProjectGrid() {
+const LAKEMINE_FALLBACK_PROJECT = {
+  _id: "lakemine-fallback",
+  title: "Lakemine",
+  slug: "lakemine",
+  image: "/lakemine.png",
+  introduction: "Databricks FinOps platform for reducing cloud waste",
+  technologies: ["Next.js", "React.js", "TypeScript", "Tailwind CSS", "ShadCN UI", "Zod", "Resend", "API Integration", "Responsive Design"],
+};
 
-  const projects = await client.fetch(PROJECTS_QUERY);
+export default async function ProjectGrid() {
+  const fetchedProjects = (await client.fetch(PROJECTS_QUERY)) || [];
+  const projects = Array.isArray(fetchedProjects)
+    ? [
+        ...fetchedProjects.filter((project: any) => project?.slug !== "lakemine"),
+        ...(fetchedProjects.some((project: any) => project?.slug === "lakemine") ? [] : [LAKEMINE_FALLBACK_PROJECT]),
+      ]
+    : [LAKEMINE_FALLBACK_PROJECT];
 
   if (!projects || projects.length === 0) {
     return (
@@ -28,28 +42,31 @@ export default async function ProjectGrid() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-        {projects.map((project: any) => (
-          <Link
-            href={`/projects/${project.slug}`}
-            key={project._id}
-            className="group flex flex-col h-full rounded-3xl border border-slate-800 bg-slate-900/40 backdrop-blur-sm overflow-hidden transition-all hover:border-indigo-500/50 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-2"
-          >
+        {projects.map((project: any) => {
+          const projectImage = project?.slug === "lakemine" ? "/lakemine.png" : project.image;
 
-            <div className="aspect-video relative overflow-hidden bg-slate-800">
-              {project.image ? (
-                <Image
-                  src={project.image}
-                  alt={project.title}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center text-slate-500 italic">
-                  Image coming soon
-                </div>
-              )}
-            </div>
+          return (
+            <Link
+              href={`/projects/${project.slug}`}
+              key={project._id}
+              className="group flex flex-col h-full rounded-3xl border border-slate-800 bg-slate-900/40 backdrop-blur-sm overflow-hidden transition-all hover:border-indigo-500/50 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-2"
+            >
+
+              <div className="aspect-video relative overflow-hidden bg-slate-800">
+                {projectImage ? (
+                  <Image
+                    src={projectImage}
+                    alt={project.title}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center text-slate-500 italic">
+                    Image coming soon
+                  </div>
+                )}
+              </div>
 
             <div className="flex flex-col grow p-7">
               <div className="flex flex-wrap gap-2 mb-4">
@@ -73,7 +90,8 @@ export default async function ProjectGrid() {
               </div>
             </div>
           </Link>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

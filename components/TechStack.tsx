@@ -8,7 +8,7 @@ const technologies = [
     },
     {
       name: "React",
-      icon: "https://cdn.worldvectorlogo.com/logos/react-2.svg",
+      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
     },
     {
       name: "TypeScript",
@@ -30,7 +30,7 @@ const technologies = [
     },
     {
       name: "PostgreSQL",
-      icon: "https://cdn.worldvectorlogo.com/logos/postgresql.svg",
+      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg",
     },
     {
       name: "Sanity",

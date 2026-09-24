@@ -91,9 +91,35 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
+const LAKEMINE_FALLBACK_PROJECT = {
+  title: "Lakemine",
+  slug: "lakemine",
+  image: "/lakemine.png",
+  introduction: "Databricks FinOps platform for reducing cloud waste",
+  liveUrl: "https://lakemine.ai/",
+  technologies: ["Next.js", "React.js", "TypeScript", "Tailwind CSS", "ShadCN UI", "Zod", "Resend", "API Integration", "Responsive Design"],
+  content: [
+    {
+      _type: "block",
+      style: "normal",
+      children: [
+        {
+          _type: "span",
+          text: "Lakemine is a Databricks FinOps platform that helps organizations identify and reduce unnecessary cloud costs by analyzing Databricks usage, workloads, and resource configurations. I contributed to the frontend by building responsive UI sections, implementing product pages and forms with Zod validation and Resend integration, improving mobile responsiveness and performance, and working on content-driven sections such as pricing, blogs, and Terms & Privacy pages.",
+        },
+      ],
+      markDefs: [],
+    },
+  ],
+};
+
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;
-  const project = await client.fetch(PROJECT_SINGLE_QUERY, { slug });
+  let project = await client.fetch(PROJECT_SINGLE_QUERY, { slug });
+
+  if (!project && slug === "lakemine") {
+    project = LAKEMINE_FALLBACK_PROJECT;
+  }
 
   if (!project) {
     return (
@@ -106,40 +132,42 @@ export default async function ProjectPage({ params }: Props) {
     );
   }
 
+  const isLakemineProject = project.title === "Lakemine" || slug === "lakemine";
+  const projectImage = isLakemineProject ? "/lakemine.png" : project.image;
+
   return (
     <main className="min-h-screen pt-32 pb-24 px-6 bg-[#020617]">
       <div className="container mx-auto max-w-4xl">
-        {/* Navigation Back */}
         <Link href="/#projects" className="text-indigo-400 hover:text-indigo-300 mb-8 inline-flex items-center gap-2 transition-colors">
           <span>←</span> Back to Projects
         </Link>
-        
-        {/* 1. Heading and Introduction */}
+
         <div className="mb-8">
           <h1 className="text-5xl font-extrabold text-white mb-4 tracking-tight">
-            {project.title}:  {project.introduction}
+            {project.title}: {project.introduction}
           </h1>
-          <p className="text-xl text-white leading-relaxed max-w-3xl">
-           
-          </p>
+          {isLakemineProject && (
+            <p className="text-lg font-medium text-indigo-400">Frontend Developer • Atompoint</p>
+          )}
         </div>
 
-        {/* 2. Action Buttons (Live Site & GitHub) */}
         <div className="flex flex-wrap gap-4 mb-12">
           {project.liveUrl && (
             <a 
               href={project.liveUrl} 
               target="_blank" 
+              rel="noreferrer"
               className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-500/20"
             >
               <ExternalLink size={18} />
               Live Site
             </a>
           )}
-          {project.github && (
+          {!isLakemineProject && project.github && (
             <a 
               href={project.github} 
               target="_blank" 
+              rel="noreferrer"
               className="flex items-center gap-2 px-6 py-3 bg-slate-800 text-slate-200 rounded-xl font-bold hover:bg-slate-700 transition-all border border-slate-700"
             >
               <Github size={18} />
@@ -148,11 +176,10 @@ export default async function ProjectPage({ params }: Props) {
           )}
         </div>
 
-        {/* 3. Project Image */}
         <div className="aspect-video relative rounded-3xl overflow-hidden mb-16 border border-slate-800 shadow-2xl">
-          {project.image && (
+          {projectImage && (
             <Image 
-              src={project.image} 
+              src={projectImage} 
               alt={project.title} 
               fill 
               className="object-cover"
@@ -161,18 +188,16 @@ export default async function ProjectPage({ params }: Props) {
           )}
         </div>
 
-        {/* 4. Description Section */}
         <div className="mb-16">
           <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
             Project Description
             <div className="h-px grow bg-slate-800"></div>
           </h2>
           <div className="prose prose-invert prose-indigo max-w-none text-slate-300 leading-7">
-            <PortableText value={project.content} />
+            <PortableText value={project.content || LAKEMINE_FALLBACK_PROJECT.content} />
           </div>
         </div>
 
-        {/* 5. Technologies Section */}
         <div className="pt-8 border-t border-slate-800">
           <h3 className="text-xl font-bold text-white mb-6">Technologies Used</h3>
           <div className="flex flex-wrap gap-3">
